@@ -23,10 +23,17 @@ public class FirstPersonController : MonoBehaviour {
     void Start () {
         cameraT = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        // Test Haversine
+        float aLat = 36.12f;
+        float aLon = -86.67f;
+        float bLat = 33.94f;
+        float bLon = -118.40f;
+        float result = (float)Haversine.calculate(aLat, aLon, bLat, bLon);
+        Debug.Log("The distance between coordinates " + aLat + "," + aLon + " and " + bLat + "," + bLon + " is: " + result);
+    }
+
+    // Update is called once per frame
+    void Update () {
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityX;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookAngle, verticalLookAngle);
