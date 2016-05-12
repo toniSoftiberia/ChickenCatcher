@@ -25,6 +25,8 @@ public class ChickenMovement : MonoBehaviour {
     public float minState = 1f;
     public float maxState = 5f;
 
+    public bool catched = false;
+
     Rigidbody rb;
 
     Vector3 moveAmount;
@@ -59,11 +61,19 @@ public class ChickenMovement : MonoBehaviour {
 	void Update () {
 
         stateTimer -= Time.deltaTime;
-        if (movingState == MovingState.Idle) {
+        if (movingState == MovingState.Idle || catched) {
+            speed = 0;
             if (stateTimer < 0) {
                 animator.SetFloat("IdleHandler", Random.Range(0, 3));
                 stateTimer = Random.Range(minState, maxState);
-                movingState = MovingState.Walk;
+                if (catched) {
+                    movingState = MovingState.Idle;
+                    if(Random.Range(0, 100) > 80) {
+                        // Escape
+                        movingState = MovingState.Run;
+                    }
+                } else
+                    movingState = MovingState.Walk;
                 rotate = 10;
                 rotateDir = Random.Range(-1, 1);
             }
@@ -92,22 +102,20 @@ public class ChickenMovement : MonoBehaviour {
 
 
     void FixedUpdate() {
+            Vector3 targetMoveAmount = Vector3.forward * speed;
+            if (CheckForward()) {
 
-        Vector3 targetMoveAmount = Vector3.forward * speed;
-        if (CheckForward()) {
+                if (rotate > 0) {
+                    int randomRotation = Random.Range(15, 90) * rotateDir;
+                    transform.RotateAround(transform.position, transform.up, Time.deltaTime * randomRotation);
+                    --rotate;
 
-            if (rotate > 0) {
-                float speed2 = 0;
-                int randomRotation = Random.Range(15, 90) * rotateDir;
-                transform.RotateAround(transform.position, transform.up, Time.deltaTime * randomRotation);
-                --rotate;
-
+                }
             }
-        }
 
-        moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+            moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
-        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
+            rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
     }
 
     public bool CheckForward() {
