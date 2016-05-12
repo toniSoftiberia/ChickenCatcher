@@ -5,27 +5,22 @@ using System;
 
 public class TimerManager : MonoBehaviour {
 
-    public static float time = 120f;
+    //public static float time = 120f;
+    public static float time = 1f;
 
-    Text text;
-
-	// Use this for initialization
-	void Start () {
-        text = GetComponent<Text>();
-	}
+    public Text timeText;
+    public Text scoreText;
 	
 	// Update is called once per frame
 	void Update () {
         time -= Time.deltaTime;
         TimeSpan ts = TimeSpan.FromMilliseconds(time * 60000);
-        text.text = ts.ToString().Substring(1, 7);
+        timeText.text = ts.ToString().Substring(1, 7);
 
 
-        /*
-          print("foo bar".Substring(2, 5));
-will output:
-
- o ba
-         */
+        if (time < 0)
+        {
+            Debug.Log("Game Over Time");
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class HenController : MonoBehaviour {
 
-    public float points = 0;
     public float extraTime = 10f;
 
     public TimerManager timer;
@@ -12,20 +11,24 @@ public class HenController : MonoBehaviour {
 
     CatcherController catcherController;
 
+    GameController gameController;
+
     void Start() {
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
-        targets = GameObject.FindGameObjectsWithTag("Bird").Length;
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponentInChildren<GameController>();
     }
 
     void OnTriggerEnter(Collider other) {
 
         if (other.tag == "Bird") {
-            ++points;
+            --GameController.score;
             Destroy(other.gameObject);
             catcherController.ResetAndFlipPosition();
-            TimerManager.time += extraTime;
-            if (points == targets) {
-                Debug.Log("Game Over");
+            GameController.time += extraTime;
+            if (GameController.score == 0)
+            {
+                Debug.Log("Level Complete");
+                gameController.LevelComplete();
             }
         }
     }
