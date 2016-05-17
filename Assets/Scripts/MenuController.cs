@@ -51,6 +51,7 @@ public class MenuController : MonoBehaviour {
     }
 
     public void StartGame() {
+        ++dataController.level;
         if (!string.IsNullOrEmpty(nameInput.text))
             dataController.playerName = nameInput.text;
         SceneManager.LoadScene("Level 1");
