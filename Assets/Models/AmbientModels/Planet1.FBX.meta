@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: da0a1161e2666a5459b2b765d4863aee
-timeCreated: 1462973288
+guid: 8f44a84029e7dd5409c27ccc01ef7157
+timeCreated: 1463254296
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Planet1
+    4300000: GeoSphere001
   materials:
     importMaterials: 1
     materialName: 0
