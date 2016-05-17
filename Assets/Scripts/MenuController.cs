@@ -24,12 +24,11 @@ public class MenuController : MonoBehaviour {
 
     void Start() {
         dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
+        highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
 
-        for(int i = 0; i < highscoreNames.Length; ++i) {
+        for (int i = 0; i < highscoreNames.Length; ++i) {
             highscoreNames[i].text = i + 1 + ". Anonimus...";
         }
-
-        highscoreManager = GetComponent<HighScores>();
 
         StartCoroutine("RefreshHighScores");
     }

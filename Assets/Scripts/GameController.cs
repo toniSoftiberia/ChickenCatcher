@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour {
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
         dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
-        highscoreManager = GameObject.FindGameObjectWithTag("UI").GetComponent<HighScores>();
+        highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
     }
 
     // Update is called once per frame

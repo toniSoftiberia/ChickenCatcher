@@ -15,7 +15,7 @@ public class HighScores : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        menuController = GetComponent<MenuController>();
+        menuController = GameObject.FindGameObjectWithTag("UI").GetComponent<MenuController>();
 
         //DownloadHighScores();
     }
@@ -31,7 +31,7 @@ public class HighScores : MonoBehaviour {
 
         if (string.IsNullOrEmpty(www.error)) {
             print("Upload succes");
-            DownloadHighScores();
+            //DownloadHighScores();
         } else {
             print("Error uploading");
             Debug.Log("Error uploading:" + www.error);
