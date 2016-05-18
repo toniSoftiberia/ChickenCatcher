@@ -15,7 +15,7 @@ public class HighScores : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        menuController = GameObject.FindGameObjectWithTag("UI").GetComponent<MenuController>();
+        menuController = GetComponent<MenuController>();
 
         //DownloadHighScores();
     }
