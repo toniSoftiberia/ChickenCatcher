@@ -51,7 +51,8 @@ public class ChickenMovement : MonoBehaviour {
 
     float stateTimer;
 
-    float speed = 0;
+    [HideInInspector]
+    public float speed = 0;
 
     int rotate = 0;
 
@@ -130,93 +131,96 @@ public class ChickenMovement : MonoBehaviour {
 
     public bool CheckForward() {
 
-        Vector3 origin = transform.position;
-        origin.y += GetComponent<SphereCollider>().radius;
-        Vector3 destinationCenter = (transform.forward * 2) * seekDistance;
-        Vector3 destinationCenterRight = ((transform.forward * 2) + (transform.right / 2)) * seekDistance;
-        Vector3 destinationRight = ((transform.forward * 2) + transform.right) * seekDistance;
-        Vector3 destinationCenterLeft = ((transform.forward * 2) + (-transform.right / 2)) * seekDistance;
-        Vector3 destinationLeft = ((transform.forward * 2) + -transform.right) * seekDistance;
-
-        ray = new Ray(origin, destinationCenter);
-        rayRight = new Ray(origin, destinationRight);
-        rayCenterRight = new Ray(origin, destinationCenterRight);
-        rayLeft = new Ray(origin, destinationLeft);
-        rayCenterLeft = new Ray(origin, destinationCenterLeft);
-
-        Debug.DrawRay(ray.origin, ray.direction * seekDistance, Color.yellow);
-        Debug.DrawRay(rayRight.origin, rayRight.direction * seekDistance, Color.cyan);
-        Debug.DrawRay(rayCenterRight.origin, rayCenterRight.direction * seekDistance, Color.cyan);
-        Debug.DrawRay(rayLeft.origin, rayLeft.direction * seekDistance, Color.red);
-        Debug.DrawRay(rayCenterLeft.origin, rayCenterLeft.direction * seekDistance, Color.red);
-
         int collisionSide = 0;
-        int playerFront = 0;
+
+        if (!catched) {
+
+            Vector3 origin = transform.position;
+            origin.y += GetComponent<SphereCollider>().radius;
+            Vector3 destinationCenter = (transform.forward * 2) * seekDistance;
+            Vector3 destinationCenterRight = ((transform.forward * 2) + (transform.right / 2)) * seekDistance;
+            Vector3 destinationRight = ((transform.forward * 2) + transform.right) * seekDistance;
+            Vector3 destinationCenterLeft = ((transform.forward * 2) + (-transform.right / 2)) * seekDistance;
+            Vector3 destinationLeft = ((transform.forward * 2) + -transform.right) * seekDistance;
+
+            ray = new Ray(origin, destinationCenter);
+            rayRight = new Ray(origin, destinationRight);
+            rayCenterRight = new Ray(origin, destinationCenterRight);
+            rayLeft = new Ray(origin, destinationLeft);
+            rayCenterLeft = new Ray(origin, destinationCenterLeft);
+
+            Debug.DrawRay(ray.origin, ray.direction * seekDistance, Color.yellow);
+            Debug.DrawRay(rayRight.origin, rayRight.direction * seekDistance, Color.cyan);
+            Debug.DrawRay(rayCenterRight.origin, rayCenterRight.direction * seekDistance, Color.cyan);
+            Debug.DrawRay(rayLeft.origin, rayLeft.direction * seekDistance, Color.red);
+            Debug.DrawRay(rayCenterLeft.origin, rayCenterLeft.direction * seekDistance, Color.red);
+            int playerFront = 0;
 
 
-        float rotationVelocity = Time.deltaTime * rotateSpeed * Mathf.Clamp(speed, 1, runSpeed);
+            float rotationVelocity = Time.deltaTime * rotateSpeed * Mathf.Clamp(speed, 1, runSpeed);
 
-        if (Physics.Raycast(rayLeft, out hit, seekDistance, avoidMask)) {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                Debug.Log("Player Left");
-                playerFront = 1;
-            } else {
-                Debug.Log("Collision Left");
-                collisionSide = 1;
+            if (Physics.Raycast(rayLeft, out hit, seekDistance, avoidMask)) {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                    Debug.Log("Player Left");
+                    playerFront = 1;
+                } else {
+                    Debug.Log("Collision Left");
+                    collisionSide = 1;
+                }
+            } else
+
+            if (Physics.Raycast(rayCenterLeft, out hit, seekDistance, avoidMask)) {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                    Debug.Log("Player Left");
+                    playerFront = 1;
+                } else {
+                    Debug.Log("Collision Left");
+                    collisionSide = 1;
+                }
+            } else
+
+            if (Physics.Raycast(rayRight, out hit, seekDistance, avoidMask)) {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                    Debug.Log("Player Right");
+                    playerFront = 1;
+                } else {
+                    Debug.Log("Collision Right");
+                    collisionSide = 1;
+                }
+            } else
+
+            if (Physics.Raycast(rayCenterRight, out hit, seekDistance, avoidMask)) {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                    Debug.Log("Player Right");
+                    playerFront = 1;
+                } else {
+                    Debug.Log("Collision Right");
+                    collisionSide = 1;
+                }
             }
-        } else
 
-        if (Physics.Raycast(rayCenterLeft, out hit, seekDistance, avoidMask)) {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                Debug.Log("Player Left");
-                playerFront = 1;
-            } else {
-                Debug.Log("Collision Left");
-                collisionSide = 1;
+            if (Physics.Raycast(ray, out hit, seekDistance, avoidMask)) {
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
+                    Debug.Log("Player Center");
+                    playerFront = 1;
+                } else {
+                    Debug.Log("Collision Center");
+                    collisionSide = 1;
+                }
             }
-        } else
+            if (collisionSide != 0) {
+                transform.RotateAround(transform.position, transform.up, rotationVelocity * collisionSide);
+                rotate = 0;
+            }
+            if (playerFront != 0) {
+                //rb.AddForce(transform.up * jumpForce);
+                transform.RotateAround(transform.position, transform.up, Random.Range(135, 225));
+                stateTimer = Random.Range(minState, maxState);
+                movingState = MovingState.Run;
+            }
 
-        if (Physics.Raycast(rayRight, out hit, seekDistance, avoidMask)) {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                Debug.Log("Player Right");
-                playerFront = 1;
-            } else {
-                Debug.Log("Collision Right");
-                collisionSide = 1;
-            }
-        } else
 
-        if (Physics.Raycast(rayCenterRight, out hit, seekDistance, avoidMask)) {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                Debug.Log("Player Right");
-                playerFront = 1;
-            } else {
-                Debug.Log("Collision Right");
-                collisionSide = 1;
-            }
         }
-
-        if (Physics.Raycast(ray, out hit, seekDistance, avoidMask)) {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
-                Debug.Log("Player Center");
-                playerFront = 1;
-            } else {
-                Debug.Log("Collision Center");
-                collisionSide = 1;
-            }
-        }
-        if (collisionSide != 0) {
-            transform.RotateAround(transform.position, transform.up, rotationVelocity * collisionSide);
-            rotate = 0;
-        }
-        if (playerFront != 0) {
-            //rb.AddForce(transform.up * jumpForce);
-            transform.RotateAround(transform.position, transform.up, Random.Range(135, 225));
-            stateTimer = Random.Range(minState, maxState);
-            movingState = MovingState.Run;
-        }
-
-
 
         return collisionSide == 0;
     }

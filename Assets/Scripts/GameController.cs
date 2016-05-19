@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour {
 
     public Image pointIndicatorChick;
     public Image pointIndicatorChicken;
+    public Image countDownIndicator;
 
     public float time = 60f;
 
@@ -47,6 +48,7 @@ public class GameController : MonoBehaviour {
     public bool lost = false;
 
     bool gameOver = false;
+    bool gameStated = false;
     [HideInInspector]
     public List<GameObject> birds;
 
@@ -75,54 +77,59 @@ public class GameController : MonoBehaviour {
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
         dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
         highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
+
+        scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
+        scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
     }
 
     // Update is called once per frame
     void Update() {
 
-        if (gameOver) {
-            if(puntuation < totalPuntuation){
-                puntuation += puntuationStep * Time.deltaTime;
-                scoreCountText.text = puntuation.ToString("00000000");
+        if (gameStated) {
+            if (gameOver) {
+                if (puntuation < totalPuntuation) {
+                    puntuation += puntuationStep * Time.deltaTime;
+                    scoreCountText.text = puntuation.ToString("00000000");
 
-            } else {
-                puntuation = totalPuntuation;
-                if (win) {
-                    if (Input.anyKey && !dataSaved) {
-                        if (!dataController.IsLastLevel()) {
-                            Debug.Log("Load next level");
-                            dataSaved = true;
-                            dataController.score += totalPuntuation;
-                            ++dataController.level;
-                            SceneManager.LoadScene("Level " + dataController.level);
+                } else {
+                    puntuation = totalPuntuation;
+                    if (win) {
+                        if (Input.anyKey && !dataSaved) {
+                            if (!dataController.IsLastLevel()) {
+                                Debug.Log("Load next level");
+                                dataSaved = true;
+                                dataController.score += totalPuntuation;
+                                ++dataController.level;
+                                SceneManager.LoadScene("Level " + dataController.level);
+                            }
                         }
                     }
                 }
-            }
 
-            TimeSpan ts = TimeSpan.FromMilliseconds(time * 60000);
-            timeText.text = ts.ToString().Substring(1, 7);
-
-        } else {
-            if (time < 0) {
-                Debug.Log("Game Over Time");
-                timeText.text = "0:00:00";
-                scoreCountText.text = "Time is over!";
-                GameOver();
-            } else {
-                time -= Time.deltaTime;
                 TimeSpan ts = TimeSpan.FromMilliseconds(time * 60000);
                 timeText.text = ts.ToString().Substring(1, 7);
+
+            } else {
+                if (time < 0) {
+                    Debug.Log("Game Over Time");
+                    timeText.text = "0:00:00";
+                    scoreCountText.text = "Time is over!";
+                    GameOver();
+                } else {
+                    time -= Time.deltaTime;
+                    TimeSpan ts = TimeSpan.FromMilliseconds(time * 60000);
+                    timeText.text = ts.ToString().Substring(1, 7);
+                }
+
+                MarkClosestChicken();
             }
 
-            MarkClosestChicken();
+            scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
+            scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
+
+            if (addPoint != ChickenMovement.BirdType.none)
+                AddPointAnimation(addPoint);
         }
-
-        scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
-        scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
-
-        if (addPoint != ChickenMovement.BirdType.none)
-            AddPointAnimation(addPoint);
 
     }
 
@@ -141,6 +148,11 @@ public class GameController : MonoBehaviour {
         ShowPuntuationCounter();
     }
 
+    public void StartGame() {
+        gameStated = true;
+        FreeBirds();
+        countDownIndicator.gameObject.SetActive(false);
+    }
 
     public void LevelComplete() {
         if (!lost) {
@@ -232,6 +244,12 @@ public class GameController : MonoBehaviour {
     void MarkClosestChicken() {
         if (helpActive && birds != null) {
             GameObject closestChicken = FindClosestChicken();
+        }
+    }
+
+    void FreeBirds() {
+        for (int i = 0; i < birds.Count; ++i) {
+            birds[i].GetComponent<ChickenMovement>().catched = false;
         }
     }
 
