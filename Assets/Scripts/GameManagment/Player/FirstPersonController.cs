@@ -19,10 +19,15 @@ public class FirstPersonController : MonoBehaviour {
 
     bool grounded;
 
+    GameController gameController;
+    CatcherController catcherController;
+
     // Use this for initialization
     void Start () {
         cameraT = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
     }
 
     // Update is called once per frame
@@ -32,10 +37,16 @@ public class FirstPersonController : MonoBehaviour {
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookAngle, verticalLookAngle);
         cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
 
-        Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        Vector3 targetMoveAmount = moveDir * walkSpeed;
-        moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
+        // Move only when game is started
+        if (gameController.gameStated) {
+            Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+            Vector3 targetMoveAmount = moveDir * walkSpeed;
+            if (catcherController.catched)
+                targetMoveAmount /= 2;
+            moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+        }
+        
         if (Input.GetButtonDown("Jump") && grounded) {
 
             rb.AddForce(transform.up * jumpForce);

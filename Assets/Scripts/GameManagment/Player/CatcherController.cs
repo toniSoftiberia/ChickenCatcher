@@ -7,7 +7,7 @@ public class CatcherController : MonoBehaviour {
     public GameObject chickensPool;
 
     private bool catching = false;
-    private bool catched = false;
+    public bool catched = false;
 
     Quaternion initialRot;
     Quaternion initialParentRot;
@@ -34,14 +34,12 @@ public class CatcherController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetButtonDown("Fire") && !catching && !catched) {
-            catching = true;
-        }
+        if (gameController.gameStated)
+	        if (Input.GetButtonDown("Fire") && !catching && !catched) 
+                catching = true;
         
-        if  (catching ) {
-            Debug.Log("Moving");
+        if  (catching )
             transform.Rotate(0,-1f * rotateSmooth, 0);
-        }
 
         if (catched) {
             ShowIndicator();

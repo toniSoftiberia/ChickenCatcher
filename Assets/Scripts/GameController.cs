@@ -20,6 +20,8 @@ public class GameController : MonoBehaviour {
     public Image leftIndicator;
     public Image rightIndicator;
     public Image bottomIndicator;
+    public Image groundIndicator;
+    public GameObject groundCanvas;
 
     public Image scoreChick;
     public Image scoreChicken;
@@ -48,7 +50,7 @@ public class GameController : MonoBehaviour {
     public bool lost = false;
 
     bool gameOver = false;
-    bool gameStated = false;
+    public bool gameStated = false;
     [HideInInspector]
     public List<GameObject> birds;
 
@@ -257,6 +259,7 @@ public class GameController : MonoBehaviour {
         leftIndicator.gameObject.SetActive(false);
         rightIndicator.gameObject.SetActive(false);
         bottomIndicator.gameObject.SetActive(false);
+        groundCanvas.transform.localScale = Vector3.zero;
     }
 
     public void ShowIndicatorLeft(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
@@ -272,6 +275,12 @@ public class GameController : MonoBehaviour {
     public void ShowIndicatorBottom(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
         SetIndicatorColor(bottomIndicator, bird);
         bottomIndicator.gameObject.SetActive(true);
+    }
+
+    public void ShowGroundIndicator(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
+        SetIndicatorColor(groundIndicator, bird);
+        if(!catcherController.catched)
+            groundCanvas.transform.localScale = Vector3.one;
     }
 
     private void SetIndicatorColor(Image img, ChickenMovement.BirdType bird) {
