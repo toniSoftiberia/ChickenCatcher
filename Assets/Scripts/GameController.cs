@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour {
 
     public Text timeText;
+    public Text extraTimeText;
     public Text scoreTextChick;
     public Text scoreTextChicken;
     public Text gameOverText;
@@ -49,7 +50,7 @@ public class GameController : MonoBehaviour {
     [HideInInspector]
     public bool lost = false;
 
-    bool gameOver = false;
+    public bool gameOver = false;
     public bool gameStated = false;
     [HideInInspector]
     public List<GameObject> birds;
@@ -82,6 +83,8 @@ public class GameController : MonoBehaviour {
 
         scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
         scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
+
+        groundCanvas.transform.localScale = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -96,6 +99,7 @@ public class GameController : MonoBehaviour {
                 } else {
                     puntuation = totalPuntuation;
                     if (win) {
+                        playerController.ActicateWinEffect();
                         if (Input.anyKey && !dataSaved) {
                             if (!dataController.IsLastLevel()) {
                                 Debug.Log("Load next level");
@@ -249,12 +253,6 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    void FreeBirds() {
-        for (int i = 0; i < birds.Count; ++i) {
-            birds[i].GetComponent<ChickenMovement>().catched = false;
-        }
-    }
-
     public void ClearIndicators() {
         leftIndicator.gameObject.SetActive(false);
         rightIndicator.gameObject.SetActive(false);
@@ -280,7 +278,8 @@ public class GameController : MonoBehaviour {
     public void ShowGroundIndicator(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
         SetIndicatorColor(groundIndicator, bird);
         if(!catcherController.catched)
-            groundCanvas.transform.localScale = Vector3.one;
+            //groundCanvas.transform.localScale = Vector3.one;
+            groundCanvas.transform.localScale = Vector3.zero;
     }
 
     private void SetIndicatorColor(Image img, ChickenMovement.BirdType bird) {
@@ -308,19 +307,34 @@ public class GameController : MonoBehaviour {
         img.transform.localScale = new Vector3(newScale, newScale, newScale);
     }
 
-    public void AddPoint(ChickenMovement.BirdType bird) {
+    public void AddPoint(ChickenMovement.BirdType bird, float extraTime) {
+
         addPoint = bird;
-        if (bird == ChickenMovement.BirdType.Chicken) {
-            plusPoint = pointIndicatorChicken;
-        }else {
+
+        if (bird == ChickenMovement.BirdType.Chick) {
             plusPoint = pointIndicatorChick;
+            extraTimeText.color = Color.yellow;
+        } else if (bird == ChickenMovement.BirdType.Chicken) {
+            plusPoint = pointIndicatorChicken;
+            extraTimeText.color = Color.red;
+        } else if (bird == ChickenMovement.BirdType.Runner) {
+            plusPoint = pointIndicatorChick;
+            extraTimeText.color = Color.blue;
         }
+
+        time += extraTime;
+        extraTimeText.text = "+" + extraTime;
+
         plusPoint.gameObject.SetActive(true);
         plusPoint.transform.localScale = Vector3.zero;
         plusPoint.transform.localPosition = Vector3.zero;
     }
 
     public void AddPointAnimation(ChickenMovement.BirdType bird) {
+
+        float newScaleExtraTIme = Mathf.Lerp(extraTimeText.transform.localScale.x, 2, Time.deltaTime * speed);
+        extraTimeText.transform.localScale = new Vector3(newScaleExtraTIme, newScaleExtraTIme, newScaleExtraTIme);
+
         if (animState == 0) {
             float newScale = Mathf.Lerp(plusPoint.transform.localScale.x, MaxScale, Time.deltaTime * speed);
             plusPoint.transform.localScale = new Vector3(newScale, newScale, newScale);
@@ -347,10 +361,12 @@ public class GameController : MonoBehaviour {
                     addPoint = ChickenMovement.BirdType.none;
                     plusPoint.gameObject.SetActive(false);
                     animState = 0;
+                    extraTimeText.transform.localScale = Vector3.zero;
                 }
             }
             else {
                 animState = 0;
+                extraTimeText.transform.localScale = Vector3.zero;
             }
         }
     }
@@ -365,4 +381,18 @@ public class GameController : MonoBehaviour {
         Destroy(dataController.gameObject);
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void StopBirds() {
+        if (birds != null) {
+            for (int i = 0; i < birds.Count; ++i)
+                birds[i].GetComponent<ChickenMovement>().catched = true;
+        }
+    }
+
+    public void FreeBirds() {
+        if (birds != null) {
+            for (int i = 0; i < birds.Count; ++i)
+                birds[i].GetComponent<ChickenMovement>().catched = false;
+        }
+    }    
 }

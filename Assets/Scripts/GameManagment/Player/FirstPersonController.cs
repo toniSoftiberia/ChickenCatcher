@@ -10,6 +10,8 @@ public class FirstPersonController : MonoBehaviour {
     public float jumpForce = 220;
     public LayerMask groundedMask;
 
+    public GameObject winEffect;
+
     Transform cameraT;
     float verticalLookRotation;
 
@@ -24,14 +26,17 @@ public class FirstPersonController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+
         cameraT = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
+
+        winEffect.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update() {
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityX;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookAngle, verticalLookAngle);
@@ -43,10 +48,10 @@ public class FirstPersonController : MonoBehaviour {
             Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
             Vector3 targetMoveAmount = moveDir * walkSpeed;
             if (catcherController.catched)
-                targetMoveAmount /= 2;
+                targetMoveAmount *= 1f;
             moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
         }
-        
+
         if (Input.GetButtonDown("Jump") && grounded) {
 
             rb.AddForce(transform.up * jumpForce);
@@ -63,5 +68,9 @@ public class FirstPersonController : MonoBehaviour {
 
     void FixedUpdate() {
         rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
+    }
+
+    public void ActicateWinEffect() {
+        winEffect.SetActive(true);
     }
 }

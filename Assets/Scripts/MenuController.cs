@@ -15,6 +15,10 @@ public class MenuController : MonoBehaviour {
     public GameObject rankingTittle;
     public GameObject rankingText;
     public Text nameInput;
+    public GameObject twitterText;
+    public GameObject thanksText;
+    public GameObject leftImage;
+    public GameObject rightImage;
 
     public Text[] highscoreScores;
     public Text[] highscoreNames;
@@ -76,6 +80,10 @@ public class MenuController : MonoBehaviour {
         tittle.SetActive(false);
         back.SetActive(true);
         creditsText.SetActive(true);
+        twitterText.SetActive(true);
+        thanksText.SetActive(true);
+        leftImage.SetActive(false);
+        rightImage.SetActive(false);
     }
 
     public void BackToMainMenu() {
@@ -88,7 +96,11 @@ public class MenuController : MonoBehaviour {
         creditsText.SetActive(false);
         rankingTittle.SetActive(false);
         rankingText.SetActive(false);
-    }
+        twitterText.SetActive(false);
+        thanksText.SetActive(false);
+        leftImage.SetActive(true);
+        rightImage.SetActive(true);
+}
 
     public void ExitGame() {
         Application.Quit();

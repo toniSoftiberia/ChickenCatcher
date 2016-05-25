@@ -4,10 +4,17 @@ using System.Collections;
 public class CatcherController : MonoBehaviour {
 
     public float rotateSmooth = 10;
+    [HideInInspector]
     public GameObject chickensPool;
 
     private bool catching = false;
+    [HideInInspector]
     public bool catched = false;
+
+    public GameObject impactCloud;
+    public float timeEffect = 0.25f;
+
+    float elapsedTimeEffect = 0;
 
     Quaternion initialRot;
     Quaternion initialParentRot;
@@ -22,6 +29,8 @@ public class CatcherController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        impactCloud.SetActive(false);
+
         initialRot = transform.rotation;
         initialParentRot = transform.parent.rotation;
 
@@ -45,31 +54,38 @@ public class CatcherController : MonoBehaviour {
             ShowIndicator();
         }
 
+        if (timeEffect > elapsedTimeEffect) {
+            elapsedTimeEffect += Time.deltaTime;
+            impactCloud.SetActive(true);
+        } else {
+            impactCloud.SetActive(false);
+        }
+
     }
 
     void OnTriggerEnter(Collider other) {
 
-        if(other.tag == "Bird" && catching) {
-            Debug.Log("Catched");
-            catching = false;
-            catched = true;
+        if(other.tag == "Bird" && catching && !catched) {
             BirdCatched();
-
 
             other.transform.position = transform.position + (transform.forward * 2.9f) + (other.transform.up * -0.7f);
             
             other.transform.parent = this.transform;
             other.GetComponent<ChickenMovement>().catched = true;
         }
-        if(other.tag == "Planet" && catching && !catched) {
-            Debug.Log("Planet");
+
+        if (other.tag == "Planet" && catching && !catched) {
             catching = false;
+
+            elapsedTimeEffect = 0;
+            
+            impactCloud.transform.position = trigger.center;
+
             ResetPosition();
         }
 
     }
-
-
+    
 
     void OnTriggerExit(Collider other) {
 
@@ -115,6 +131,9 @@ public class CatcherController : MonoBehaviour {
     }
 
     void BirdCatched() {
+        catching = false;
+        catched = true;
+
         transform.Rotate(0, 0, 180f);
         UpPosition();
     }
