@@ -65,6 +65,17 @@ public class GameController : MonoBehaviour {
 
     bool dataSaved = false;
 
+
+    public AudioSource startAudio;
+    public AudioSource pauseAudio;
+    public AudioSource nextLevelAudio;
+    public AudioSource gameCompleteAudio;
+    public AudioSource gameOverAudio;
+
+    AudioSource backgroundMusic;
+
+    CursorController cursor;
+
     // Use this for initialization
     void Start() {
         birds = (GameObject.FindGameObjectsWithTag("Bird")).ToList(); ;
@@ -78,13 +89,18 @@ public class GameController : MonoBehaviour {
         henController = GameObject.FindGameObjectWithTag("HenHouse").transform.parent.GetComponent<HenController>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
-        dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
         highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
 
         scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
         scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
 
         groundCanvas.transform.localScale = Vector3.zero;
+
+        backgroundMusic = Camera.main.GetComponent<AudioSource>();
+
+        cursor = GetComponent<CursorController>();
+
+        dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
     }
 
     // Update is called once per frame
@@ -142,6 +158,10 @@ public class GameController : MonoBehaviour {
     public void GameOver() {
         lost = true;
 
+        gameOverAudio.Play();
+        backgroundMusic.Stop();
+        cursor.EnableCursor();
+
         henController.enabled = false;
         playerController.enabled = false;
         catcherController.enabled = false;
@@ -158,19 +178,27 @@ public class GameController : MonoBehaviour {
         gameStated = true;
         FreeBirds();
         countDownIndicator.gameObject.SetActive(false);
+        startAudio.Play();
     }
 
     public void LevelComplete() {
         if (!lost) {
+
             win = true;
+
+            cursor.EnableCursor();
 
             henController.enabled = false;
             playerController.enabled = false;
             catcherController.enabled = false;
 
             if (!dataController.IsLastLevel()) {
+                nextLevelAudio.Play();
+                backgroundMusic.Stop();
                 pressKey.gameObject.SetActive(true);
             } else {
+                gameCompleteAudio.Play();
+                backgroundMusic.Stop();
                 submitScore.gameObject.SetActive(true);
                 MainMenuButton.gameObject.SetActive(true);
             }

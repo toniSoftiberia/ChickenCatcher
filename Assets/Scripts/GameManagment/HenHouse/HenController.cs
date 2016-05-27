@@ -7,6 +7,7 @@ public class HenController : MonoBehaviour {
     public float extraTimeChicken = 30f;
     public float extraTimeRunner = 40f;
 
+
     float extraTime;
 
     CatcherController catcherController;
@@ -41,7 +42,7 @@ public class HenController : MonoBehaviour {
                 if (gameController.birds.Count == 0) {
                     Debug.Log("Level Complete");
                     gameController.LevelComplete();
-                }
+                } 
             }
         }
     }

@@ -7,6 +7,8 @@ public class PauseController : MonoBehaviour {
     public Text gamePausedText;
     public Button MainMenuButton;
 
+    public AudioSource pauseAudio;
+
     CatcherController catcherController;
     GameController gameController;
     FirstPersonController playerController;
@@ -40,6 +42,7 @@ public class PauseController : MonoBehaviour {
             gameController.enabled = false;
             gamePausedText.gameObject.SetActive(true);
             MainMenuButton.gameObject.SetActive(true);
+            pauseAudio.Play();
             paused = !paused;
         }
     }
@@ -52,6 +55,7 @@ public class PauseController : MonoBehaviour {
         MainMenuButton.gameObject.SetActive(false);
         gameController.FreeBirds();
         cursorController.DisableCursor();
+        pauseAudio.Play();
         paused = !paused;
     }
 

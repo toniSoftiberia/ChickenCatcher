@@ -6,6 +6,8 @@ public class AddPointEffect : MonoBehaviour {
     public GameObject addPointEffect;
     public float timeEffect = 0.25f;
 
+    public AudioSource AddPointAudio;
+
     float elapsedTimeEffect = 0;
 
     // Use this for initialization
@@ -29,5 +31,6 @@ public class AddPointEffect : MonoBehaviour {
 
     public void Run() {
         elapsedTimeEffect = 0;
+        AddPointAudio.Play();
     }
 }

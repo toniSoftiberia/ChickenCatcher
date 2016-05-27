@@ -14,6 +14,11 @@ public class CatcherController : MonoBehaviour {
     public GameObject impactCloud;
     public float timeEffect = 0.25f;
 
+    public AudioSource escapeAudio;
+
+    public AudioSource movementAudio;
+    public AudioSource impactAudio;
+
     float elapsedTimeEffect = 0;
 
     Quaternion initialRot;
@@ -44,8 +49,10 @@ public class CatcherController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (gameController.gameStated)
-	        if (Input.GetButtonDown("Fire") && !catching && !catched) 
+            if (Input.GetButtonDown("Fire") && !catching && !catched) {
                 catching = true;
+                movementAudio.Play();
+            }
         
         if  (catching )
             transform.Rotate(0,-1f * rotateSmooth, 0);
@@ -74,12 +81,14 @@ public class CatcherController : MonoBehaviour {
             other.GetComponent<ChickenMovement>().catched = true;
         }
 
-        if (other.tag == "Planet" && catching && !catched) {
+        if ((other.tag == "Planet" || other.gameObject.layer == LayerMask.GetMask("Scene")) && catching && !catched) {
             catching = false;
 
             elapsedTimeEffect = 0;
             
             impactCloud.transform.position = trigger.center;
+
+            impactAudio.Play();
 
             ResetPosition();
         }
@@ -91,6 +100,8 @@ public class CatcherController : MonoBehaviour {
 
         if (catched && other.tag == "Bird") {
             Debug.Log("Escaped");
+
+            escapeAudio.Play();
 
             ResetState();
 

@@ -24,15 +24,19 @@ public class FirstPersonController : MonoBehaviour {
     GameController gameController;
     CatcherController catcherController;
 
+    void Awake() {
+        winEffect.SetActive(false);
+    }
+
     // Use this for initialization
     void Start () {
 
         cameraT = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
-        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
 
-        winEffect.SetActive(false);
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+
     }
 
     // Update is called once per frame

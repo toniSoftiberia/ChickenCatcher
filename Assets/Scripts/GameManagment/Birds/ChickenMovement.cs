@@ -56,7 +56,10 @@ public class ChickenMovement : MonoBehaviour {
 
     int rotate = 0;
 
-    int rotateDir;    
+    int rotateDir;
+
+    public AudioSource idleAudio;
+    public AudioSource runAwayAudio;
 
     void Start () {
         animator = GetComponent<Animator>();
@@ -95,6 +98,7 @@ public class ChickenMovement : MonoBehaviour {
                 stateTimer = Random.Range(minState, maxState);
                 movingState = MovingState.Idle;
                 speed = 0;
+                idleAudio.Play();
             }
         } else if (movingState == MovingState.Run) {
             speed = runSpeed;
@@ -102,6 +106,8 @@ public class ChickenMovement : MonoBehaviour {
                 animator.SetFloat("IdleHandler", Random.Range(0, 3));
                 stateTimer = Random.Range(minState, maxState);
                 movingState = MovingState.Idle;
+                idleAudio.Play();
+                runAwayAudio.Stop();
                 speed = 0;
             }
         }     
@@ -217,9 +223,13 @@ public class ChickenMovement : MonoBehaviour {
                 transform.RotateAround(transform.position, transform.up, Random.Range(135, 225));
                 stateTimer = Random.Range(minState, maxState);
                 movingState = MovingState.Run;
+                runAwayAudio.Play();
             }
 
 
+        }else {
+            idleAudio.Stop();
+            runAwayAudio.Stop();
         }
 
         return collisionSide == 0;
