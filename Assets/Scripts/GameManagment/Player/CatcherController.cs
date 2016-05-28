@@ -123,6 +123,9 @@ public class CatcherController : MonoBehaviour {
         DownPosition();
         Quaternion actualParentRot = transform.parent.rotation;
         transform.parent.rotation = initialParentRot;
+        //transform.rotation = initialRot;
+        //transform.RotateAroundLocal
+            ///transform.Rotate(initialRot);
         transform.rotation = initialRot;
         transform.parent.rotation = actualParentRot;
     }

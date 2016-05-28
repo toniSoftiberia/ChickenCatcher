@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour {
                                 dataSaved = true;
                                 dataController.score += totalPuntuation;
                                 ++dataController.level;
-                                SceneManager.LoadScene("Level " + dataController.level);
+                                SceneManager.LoadScene("VRLevel " + dataController.level);
                             }
                         }
                     }

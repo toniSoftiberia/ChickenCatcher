@@ -58,7 +58,8 @@ public class MenuController : MonoBehaviour {
         ++dataController.level;
         if (!string.IsNullOrEmpty(nameInput.text))
             dataController.playerName = nameInput.text;
-        SceneManager.LoadScene("Level 1");
+        // IF VR
+        SceneManager.LoadScene("VRLevel 1");
     }
 
     public void ShowRanking() {

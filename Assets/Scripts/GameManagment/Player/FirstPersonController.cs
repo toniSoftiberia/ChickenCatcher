@@ -31,20 +31,20 @@ public class FirstPersonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        cameraT = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
         catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
 
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
+        //cameraT = Camera.main.transform;
     }
 
     // Update is called once per frame
     void Update() {
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
-        verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityX;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookAngle, verticalLookAngle);
-        cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
+        //transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
+        //verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityX;
+        //verticalLookRotation = Mathf.Clamp(verticalLookRotation, -verticalLookAngle, verticalLookAngle);
+        //cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
 
 
         // Move only when game is started
