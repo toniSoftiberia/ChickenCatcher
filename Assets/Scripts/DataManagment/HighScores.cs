@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HighScores : MonoBehaviour {
 
-    const string privateCode = "GaOGpRBzPE-NnICkZjiMpAmFDFyzyqkkG7Ijw3Iq01eA";
+    const string privateCode = "GaOGpRBzPE-NnICkZjiMpAmFDFyzyqkkG7Ijw3Iq01eA"; 
     const string publicCode = "5739ea846e51b60f80ccc20a";
     const string webURL = "http://dreamlo.com/lb/";
 
@@ -26,7 +26,7 @@ public class HighScores : MonoBehaviour {
 
     IEnumerator UploadNewHighScore(string username, int score) {
 
-        WWW www = new WWW(webURL + privateCode + "/add-pipe/" + WWW.EscapeURL(username) + "/" + score);
+        WWW www = new WWW(webURL + privateCode + "/add/" + WWW.EscapeURL(username) + "/" + score);
         yield return www;
 
         if (string.IsNullOrEmpty(www.error)) {
