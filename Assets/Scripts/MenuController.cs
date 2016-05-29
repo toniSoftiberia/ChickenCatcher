@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MenuController : MonoBehaviour {
 
@@ -33,6 +34,8 @@ public class MenuController : MonoBehaviour {
         for (int i = 0; i < highscoreNames.Length; ++i) {
             highscoreNames[i].text = i + 1 + ". Anonimus...";
         }
+
+        EventSystem.current.SetSelectedGameObject(start);
 
         StartCoroutine("RefreshHighScores");
     }

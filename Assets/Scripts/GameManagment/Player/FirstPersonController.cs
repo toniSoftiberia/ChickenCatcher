@@ -11,6 +11,9 @@ public class FirstPersonController : MonoBehaviour {
     public LayerMask groundedMask;
 
     public GameObject winEffect;
+    public GameObject head;
+
+    public bool menu = false;
 
     Transform cameraT;
     float verticalLookRotation;
@@ -31,10 +34,11 @@ public class FirstPersonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        rb = GetComponent<Rigidbody>();
-        catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
+        rb = GetComponentInParent<Rigidbody>();
+        catcherController = GameObject.FindGameObjectWithTag("Catcher").GetComponent<CatcherController>();
 
-        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        if (!menu)
+            gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 
         //cameraT = Camera.main.transform;
     }
@@ -47,26 +51,28 @@ public class FirstPersonController : MonoBehaviour {
         //cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
 
 
-        // Move only when game is started
-        if (gameController.gameStated) {
-            Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-            Vector3 targetMoveAmount = moveDir * walkSpeed;
-            if (catcherController.catched)
-                targetMoveAmount *= 1f;
-            moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
-        }
+        if (!menu) {
+            // Move only when game is started
+            if (gameController.gameStated) {
+                Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+                Vector3 targetMoveAmount = moveDir * walkSpeed;
+                if (catcherController.catched)
+                    targetMoveAmount *= 1f;
+                moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+            }
 
-        if (Input.GetButtonDown("Jump") && grounded) {
+            if (Input.GetButtonDown("Jump") && grounded) {
 
-            rb.AddForce(transform.up * jumpForce);
-        }
+                rb.AddForce(transform.up * jumpForce);
+            }
 
-        grounded = false;
-        Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit hit;
-        float distance = GetComponent<CapsuleCollider>().height / 2 + 0.1f;
-        if (Physics.Raycast(ray, out hit, distance, groundedMask)) {
-            grounded = true;
+            grounded = false;
+            Ray ray = new Ray(transform.position, -transform.up);
+            RaycastHit hit;
+            float distance = GetComponentInParent<CapsuleCollider>().height / 2 + 0.1f;
+            if (Physics.Raycast(ray, out hit, distance, groundedMask)) {
+                grounded = true;
+            }
         }
     }
 

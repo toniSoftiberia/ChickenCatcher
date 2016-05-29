@@ -21,8 +21,6 @@ public class GameController : MonoBehaviour {
     public Image leftIndicator;
     public Image rightIndicator;
     public Image bottomIndicator;
-    public Image groundIndicator;
-    public GameObject groundCanvas;
 
     public Image scoreChick;
     public Image scoreChicken;
@@ -88,14 +86,12 @@ public class GameController : MonoBehaviour {
 
         henController = GameObject.FindGameObjectWithTag("HenHouse").transform.parent.GetComponent<HenController>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
-        catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
+        catcherController = GameObject.FindGameObjectWithTag("Catcher").GetComponentInChildren<CatcherController>();
         highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
 
         scoreTextChick.text = (countBirds(ChickenMovement.BirdType.Chick) + countBirds(ChickenMovement.BirdType.Runner)).ToString();
         scoreTextChicken.text = countBirds(ChickenMovement.BirdType.Chicken).ToString();
-
-        groundCanvas.transform.localScale = Vector3.zero;
-
+        
         backgroundMusic = Camera.main.GetComponent<AudioSource>();
 
         cursor = GetComponent<CursorController>();
@@ -285,7 +281,6 @@ public class GameController : MonoBehaviour {
         leftIndicator.gameObject.SetActive(false);
         rightIndicator.gameObject.SetActive(false);
         bottomIndicator.gameObject.SetActive(false);
-        groundCanvas.transform.localScale = Vector3.zero;
     }
 
     public void ShowIndicatorLeft(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
@@ -301,13 +296,6 @@ public class GameController : MonoBehaviour {
     public void ShowIndicatorBottom(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
         SetIndicatorColor(bottomIndicator, bird);
         bottomIndicator.gameObject.SetActive(true);
-    }
-
-    public void ShowGroundIndicator(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
-        SetIndicatorColor(groundIndicator, bird);
-        if(!catcherController.catched)
-            //groundCanvas.transform.localScale = Vector3.one;
-            groundCanvas.transform.localScale = Vector3.zero;
     }
 
     private void SetIndicatorColor(Image img, ChickenMovement.BirdType bird) {

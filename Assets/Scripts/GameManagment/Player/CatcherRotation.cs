@@ -4,7 +4,8 @@ using System.Collections;
 public class CatcherRotation : MonoBehaviour {
 
     public Transform player;
-    public Transform catcher;
+    public Transform head;
+    public Transform childs;
 
     Quaternion startRotation;
     Quaternion lastRotation;
@@ -17,13 +18,15 @@ public class CatcherRotation : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-
+        /*
         var angle = Quaternion.Angle( lastRotation, transform.localRotation);
 
         if (lastRotation.y > transform.localRotation.y )
             angle *= -1;
-        catcher.transform.RotateAround(player.position, Vector3.up, angle);
+        childs.transform.RotateAround(player.position, Vector3.up, angle);
 
-        lastRotation = transform.localRotation;
+        lastRotation = transform.localRotation;*/
+
+        childs.localRotation = new Quaternion(childs.localRotation.x, head.localRotation.y, childs.localRotation.z, head.localRotation.w);
     }
 }

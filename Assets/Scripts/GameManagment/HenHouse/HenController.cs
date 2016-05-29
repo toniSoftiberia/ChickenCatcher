@@ -17,7 +17,7 @@ public class HenController : MonoBehaviour {
     AddPointEffect addPointEffect;
 
     void Start() {
-        catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
+        catcherController = GameObject.FindGameObjectWithTag("Catcher").GetComponent<CatcherController>();
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponentInChildren<GameController>();
         addPointEffect = GetComponent<AddPointEffect>();
     }

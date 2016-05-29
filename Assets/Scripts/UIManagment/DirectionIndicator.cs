@@ -29,9 +29,7 @@ public class DirectionIndicator : MonoBehaviour {
                 } else {
                     ShowIndicator();
                 }
-            } else {
-                gameController.ShowGroundIndicator(birdType);
-            }
+            } 
         }
     }
 

@@ -34,9 +34,9 @@ public class CatcherController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        impactCloud.SetActive(false);
+        //impactCloud.SetActive(false);
 
-        initialRot = transform.rotation;
+        initialRot = transform.localRotation;
         initialParentRot = transform.parent.rotation;
 
         planetGravity = GameObject.FindGameObjectWithTag("Planet").GetComponent<GravityAttraction>();
@@ -85,8 +85,11 @@ public class CatcherController : MonoBehaviour {
             catching = false;
 
             elapsedTimeEffect = 0;
-            
-            impactCloud.transform.position = trigger.center;
+
+            //impactCloud.transform.position = transform.position + (transform.forward * 2.8f);// + trigger.center;
+            impactCloud.transform.position = trigger.transform.position + (transform.forward * 2.8f) + (transform.right * .2f);
+            impactCloud.transform.rotation = transform.parent.rotation;
+            impactCloud.transform.Rotate(90f, 90f, 0f);
 
             impactAudio.Play();
 
@@ -122,12 +125,12 @@ public class CatcherController : MonoBehaviour {
     public void ResetPosition() {
         DownPosition();
         Quaternion actualParentRot = transform.parent.rotation;
-        transform.parent.rotation = initialParentRot;
+        //transform.parent.rotation = initialParentRot;
         //transform.rotation = initialRot;
         //transform.RotateAroundLocal
             ///transform.Rotate(initialRot);
-        transform.rotation = initialRot;
-        transform.parent.rotation = actualParentRot;
+        transform.localRotation = initialRot;
+        //transform.parent.rotation = actualParentRot;
     }
 
     void UpPosition() {

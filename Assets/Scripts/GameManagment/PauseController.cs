@@ -18,7 +18,7 @@ public class PauseController : MonoBehaviour {
     bool paused = false;
 
     void Start() {
-        catcherController = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CatcherController>();
+        catcherController = GameObject.FindGameObjectWithTag("Catcher").GetComponentInChildren<CatcherController>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<FirstPersonController>();
         gameController = GetComponent<GameController>();
         cursorController = GetComponent<CursorController>();
