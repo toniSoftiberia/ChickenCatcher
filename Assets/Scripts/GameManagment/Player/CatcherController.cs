@@ -41,9 +41,9 @@ public class CatcherController : MonoBehaviour {
 
         planetGravity = GameObject.FindGameObjectWithTag("Planet").GetComponent<GravityAttraction>();
         chickensPool = GameObject.FindGameObjectWithTag("Birds");
-        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         henHouse = GameObject.FindGameObjectWithTag("HenHouse");
         trigger = GetComponentInChildren<BoxCollider>();
+        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
     }
 	
 	// Update is called once per frame

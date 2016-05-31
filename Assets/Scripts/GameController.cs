@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour {
 
@@ -96,6 +97,8 @@ public class GameController : MonoBehaviour {
 
         cursor = GetComponent<CursorController>();
 
+        EventSystem.current.SetSelectedGameObject(MainMenuButton.gameObject);
+
         dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
     }
 
@@ -112,7 +115,7 @@ public class GameController : MonoBehaviour {
                     puntuation = totalPuntuation;
                     if (win) {
                         playerController.ActicateWinEffect();
-                        if (Input.anyKey && !dataSaved) {
+                        if (Input.anyKeyDown && !dataSaved) {
                             if (!dataController.IsLastLevel()) {
                                 Debug.Log("Load next level");
                                 dataSaved = true;
@@ -168,6 +171,8 @@ public class GameController : MonoBehaviour {
         gameOverText.text = "Game Over!";
         gameOverText.color = Color.red;
         ShowPuntuationCounter();
+
+        EventSystem.current.SetSelectedGameObject(submitScore.gameObject);
     }
 
     public void StartGame() {

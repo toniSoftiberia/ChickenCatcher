@@ -54,10 +54,10 @@ public class FirstPersonController : MonoBehaviour {
         if (!menu) {
             // Move only when game is started
             if (gameController.gameStated) {
-                Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+                Vector3 moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
                 Vector3 targetMoveAmount = moveDir * walkSpeed;
                 if (catcherController.catched)
-                    targetMoveAmount *= 1f;
+                    targetMoveAmount *= 0.8f;
                 moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
             }
 

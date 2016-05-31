@@ -28,16 +28,20 @@ public class MenuController : MonoBehaviour {
     DataController dataController;
 
     void Start() {
-        dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
         highscoreManager = GameObject.FindGameObjectWithTag("Data").GetComponent<HighScores>();
 
         for (int i = 0; i < highscoreNames.Length; ++i) {
             highscoreNames[i].text = i + 1 + ". Anonimus...";
         }
 
-        EventSystem.current.SetSelectedGameObject(start);
+        dataController = GameObject.FindGameObjectWithTag("Data").GetComponent<DataController>();
 
         StartCoroutine("RefreshHighScores");
+    }
+
+    void Update() {
+        if (EventSystem.current.currentSelectedGameObject == null)
+            EventSystem.current.SetSelectedGameObject(start);
     }
 
     IEnumerator RefreshHighScores() {
@@ -58,10 +62,12 @@ public class MenuController : MonoBehaviour {
     }
 
     public void StartGame() {
-        ++dataController.level;
-        if (!string.IsNullOrEmpty(nameInput.text))
-            dataController.playerName = nameInput.text;
         // IF VR
+        if(dataController != null) {
+            ++dataController.level;
+            if (!string.IsNullOrEmpty(nameInput.text))
+                dataController.playerName = nameInput.text;
+        }
         SceneManager.LoadScene("VRLevel 1");
     }
 
@@ -74,6 +80,7 @@ public class MenuController : MonoBehaviour {
         tittle.SetActive(false);
         back.SetActive(true);
         rankingText.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(back);
     }
 
     public void ShowCredits() {
@@ -88,6 +95,7 @@ public class MenuController : MonoBehaviour {
         thanksText.SetActive(true);
         leftImage.SetActive(false);
         rightImage.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(back);
     }
 
     public void BackToMainMenu() {
@@ -104,7 +112,8 @@ public class MenuController : MonoBehaviour {
         thanksText.SetActive(false);
         leftImage.SetActive(true);
         rightImage.SetActive(true);
-}
+        EventSystem.current.SetSelectedGameObject(start);
+    }
 
     public void ExitGame() {
         Application.Quit();
