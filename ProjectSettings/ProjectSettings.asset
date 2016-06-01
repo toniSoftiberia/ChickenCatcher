@@ -45,7 +45,7 @@ PlayerSettings:
   Prepare IOS For Recording: 0
   submitAnalytics: 1
   usePlayerLog: 1
-  bakeCollisionMeshes: 0
+  bakeCollisionMeshes: 1
   forceSingleInstance: 0
   resizableWindow: 0
   useMacAppStoreValidation: 0
@@ -98,19 +98,19 @@ PlayerSettings:
   virtualRealitySupported: 0
   productGUID: 5c596556decb141888be121e4494e18f
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 22
-  AndroidPreferredInstallLocation: 2
+  AndroidMinSdkVersion: 16
+  AndroidPreferredInstallLocation: 0
   aotOptions: 
   apiCompatibilityLevel: 2
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
   iPhoneBuildNumber: 0
-  ForceInternetPermission: 1
+  ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 1
-  preloadShaders: 0
+  preloadShaders: 1
   StripUnusedMeshComponents: 1
   VertexChannelCompressionMask:
     serializedVersion: 2
