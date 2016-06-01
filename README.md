@@ -1,8 +1,8 @@
 # ChickenCatcher
 ##The authentic VR experience low cost
-You only need a cardboard and a gamepad for enjoy a funny VR game
+Chicken Catcher is a cute game where you must to catch all the escaped birds and take them to the hen house. It's easy and simple, if you go faster you will get better puntuations but the bird will escape.
 
-Chicken Catcher is a game where you must to catch all the chickens and take it to the hen house. 
+You only need a cardboard and a gamepad to enjoy this funny virtual reality.
 
 Will you be the faster "Chicken Catcher" submit your score at the end of the game and take a look in our Top5 ranking.
 
