@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
+    #region Public Attributes
     public Text timeText;
     public Text extraTimeText;
     public Text scoreTextChick;
@@ -37,6 +38,30 @@ public class GameController : MonoBehaviour {
 
     public bool helpActive = true;
 
+
+
+
+
+    public ChickenMovement.BirdType addPoint = ChickenMovement.BirdType.none;
+    public float MinScale = .1f;
+    public float MaxScale = 1f;
+    public float speed = 10f;
+
+
+    public AudioSource startAudio;
+    public AudioSource pauseAudio;
+    public AudioSource nextLevelAudio;
+    public AudioSource gameCompleteAudio;
+    public AudioSource gameOverAudio;
+    [HideInInspector]
+    public bool lost = false;
+
+    public bool gameOver = false;
+    public bool gameStated = false;
+    [HideInInspector]
+    #endregion
+
+    #region Private Attributes
     float puntuation = 0;
     float totalPuntuation = 0;
     float puntuationStep = 0;
@@ -47,12 +72,6 @@ public class GameController : MonoBehaviour {
     Color blue;
 
     bool win = false;
-    [HideInInspector]
-    public bool lost = false;
-
-    public bool gameOver = false;
-    public bool gameStated = false;
-    [HideInInspector]
     public List<GameObject> birds;
 
     HenController henController;
@@ -61,21 +80,17 @@ public class GameController : MonoBehaviour {
     DataController dataController;
     HighScores highscoreManager;
 
-    float level = 0;
-
     bool dataSaved = false;
+    int animState = 0;
 
-
-    public AudioSource startAudio;
-    public AudioSource pauseAudio;
-    public AudioSource nextLevelAudio;
-    public AudioSource gameCompleteAudio;
-    public AudioSource gameOverAudio;
+    Image plusPoint;
 
     AudioSource backgroundMusic;
 
     CursorController cursor;
+    #endregion
 
+    #region Public Methods
     // Use this for initialization
     void Start() {
         birds = (GameObject.FindGameObjectsWithTag("Bird")).ToList(); ;
@@ -209,84 +224,6 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    void LoadData() {
-        bool data = false;
-
-        if (!data) {
-            SaveData();
-        }
-    }
-
-    void SaveData() {
-        puntuation = 0;
-    }
-
-    void ShowPuntuationCounter() {
-
-        gameOver = true;
-
-        totalPuntuation = 33 * time;
-        totalPuntuation += dataController.score;
-        puntuation = dataController.score;
-        puntuationStep = (totalPuntuation - puntuation) / (countDuration); 
-
-        gameOverText.gameObject.SetActive(true);
-        scoreCountText.text = puntuation.ToString("000000");
-        scoreCountText.gameObject.SetActive(true);
-
-        dataController.score = totalPuntuation;
-    }
-
-    GameObject FindClosestChicken() {
-
-        ClearIndicators();
-
-        GameObject closestChicken = null;
-
-        if (birds != null) {
-
-            closestChicken = birds[0];
-
-            for (int i = 0; i < birds.Count; ++i) {
-                birds[i].GetComponentInChildren<DirectionIndicator>().closest = false;
-                //compares distances
-                if (Vector3.Distance(Camera.main.transform.position, birds[i].transform.position) <= Vector3.Distance(Camera.main.transform.position, closestChicken.transform.position)) {
-                    closestChicken = birds[i];
-                }
-            }
-
-            closestChicken.GetComponentInChildren<DirectionIndicator>().closest = true;
-        }
-
-        return closestChicken;
-    }
-
-    int countBirds(ChickenMovement.BirdType bird) {
-        int res = 0;
-
-        if (birds != null) {
-            for (int i = 0; i < birds.Count; ++i) {
-                if(birds[i].GetComponent<ChickenMovement>().birdType == bird){
-                    ++res;
-                }
-            }
-        }
-
-        return res;
-    }
-
-    void MarkClosestChicken() {
-        if (helpActive && birds != null) {
-            GameObject closestChicken = FindClosestChicken();
-        }
-    }
-
-    public void ClearIndicators() {
-        leftIndicator.gameObject.SetActive(false);
-        rightIndicator.gameObject.SetActive(false);
-        bottomIndicator.gameObject.SetActive(false);
-        groundCanvas.transform.localScale = Vector3.zero;
-    }
 
     public void ShowIndicatorLeft(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
         SetIndicatorColor(leftIndicator, bird);
@@ -303,36 +240,18 @@ public class GameController : MonoBehaviour {
         bottomIndicator.gameObject.SetActive(true);
     }
 
+    public void ClearIndicators() {
+        leftIndicator.gameObject.SetActive(false);
+        rightIndicator.gameObject.SetActive(false);
+        bottomIndicator.gameObject.SetActive(false);
+        groundCanvas.transform.localScale = Vector3.zero;
+    }
+
     public void ShowGroundIndicator(ChickenMovement.BirdType bird = ChickenMovement.BirdType.none) {
         SetIndicatorColor(groundIndicator, bird);
         if(!catcherController.catched)
             //groundCanvas.transform.localScale = Vector3.one;
             groundCanvas.transform.localScale = Vector3.zero;
-    }
-
-    private void SetIndicatorColor(Image img, ChickenMovement.BirdType bird) {
-        if(bird == ChickenMovement.BirdType.Chick) {
-            img.color = yellow;
-        } else if (bird == ChickenMovement.BirdType.Chicken) {
-            img.color = red;
-        } else if (bird == ChickenMovement.BirdType.Runner) {
-            img.color = blue;
-        } else if (bird == ChickenMovement.BirdType.none) {
-            img.color = green;
-        }
-    }
-
-    public ChickenMovement.BirdType addPoint = ChickenMovement.BirdType.none;
-    public float MinScale = .1f;
-    public float MaxScale = 1f;
-    public float speed = 10f;
-    private int animState = 0;
-
-    private Image plusPoint;
-
-    private void IncreaseScale(Image img) {
-        float newScale = Mathf.Lerp(img.transform.localScale.x, MaxScale, Time.deltaTime * speed);
-        img.transform.localScale = new Vector3(newScale, newScale, newScale);
     }
 
     public void AddPoint(ChickenMovement.BirdType bird, float extraTime) {
@@ -422,5 +341,98 @@ public class GameController : MonoBehaviour {
             for (int i = 0; i < birds.Count; ++i)
                 birds[i].GetComponent<ChickenMovement>().catched = false;
         }
-    }    
+    }
+    #endregion
+
+
+    #region Private Methods
+
+    private void SetIndicatorColor(Image img, ChickenMovement.BirdType bird) {
+        if (bird == ChickenMovement.BirdType.Chick) {
+            img.color = yellow;
+        } else if (bird == ChickenMovement.BirdType.Chicken) {
+            img.color = red;
+        } else if (bird == ChickenMovement.BirdType.Runner) {
+            img.color = blue;
+        } else if (bird == ChickenMovement.BirdType.none) {
+            img.color = green;
+        }
+    }
+
+    private void IncreaseScale(Image img) {
+        float newScale = Mathf.Lerp(img.transform.localScale.x, MaxScale, Time.deltaTime * speed);
+        img.transform.localScale = new Vector3(newScale, newScale, newScale);
+    }
+    void LoadData() {
+        bool data = false;
+
+        if (!data) {
+            SaveData();
+        }
+    }
+
+    void SaveData() {
+        puntuation = 0;
+    }
+
+    void ShowPuntuationCounter() {
+
+        gameOver = true;
+
+        totalPuntuation = 33 * time;
+        totalPuntuation += dataController.score;
+        puntuation = dataController.score;
+        puntuationStep = (totalPuntuation - puntuation) / (countDuration);
+
+        gameOverText.gameObject.SetActive(true);
+        scoreCountText.text = puntuation.ToString("000000");
+        scoreCountText.gameObject.SetActive(true);
+
+        dataController.score = totalPuntuation;
+    }
+
+    GameObject FindClosestChicken() {
+
+        ClearIndicators();
+
+        GameObject closestChicken = null;
+
+        if (birds != null) {
+
+            closestChicken = birds[0];
+
+            for (int i = 0; i < birds.Count; ++i) {
+                birds[i].GetComponentInChildren<DirectionIndicator>().closest = false;
+                //compares distances
+                if (Vector3.Distance(Camera.main.transform.position, birds[i].transform.position) <= Vector3.Distance(Camera.main.transform.position, closestChicken.transform.position)) {
+                    closestChicken = birds[i];
+                }
+            }
+
+            closestChicken.GetComponentInChildren<DirectionIndicator>().closest = true;
+        }
+
+        return closestChicken;
+    }
+
+    int countBirds(ChickenMovement.BirdType bird) {
+        int res = 0;
+
+        if (birds != null) {
+            for (int i = 0; i < birds.Count; ++i) {
+                if (birds[i].GetComponent<ChickenMovement>().birdType == bird) {
+                    ++res;
+                }
+            }
+        }
+
+        return res;
+    }
+
+    void MarkClosestChicken() {
+        if (helpActive && birds != null) {
+            FindClosestChicken();
+        }
+    }
+    #endregion
 }

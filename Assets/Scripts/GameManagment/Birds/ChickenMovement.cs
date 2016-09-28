@@ -3,45 +3,130 @@ using System.Collections;
 
 public class ChickenMovement : MonoBehaviour {
 
-
+    #region Enums
+    /// <summary>
+    /// Enum to handle the moving states
+    /// </summary>
     public enum MovingState {
         Idle,
         Walk,
         Run
     }
 
+    /// <summary>
+    /// Enum to handle the bird type
+    /// </summary>
     public enum BirdType {
         none = -1,
         Chick,
         Chicken,
         Runner
     }
+    #endregion
 
+    #region Public Attributes
+    /// <summary>
+    /// Mask to collision
+    /// </summary>
     public LayerMask avoidMask;
 
+    /// <summary>
+    /// Type of the bird
+    /// </summary>
     public BirdType birdType;
 
-    private Animator animator;
-    private float animationSpeed;
+    /// <summary>
+    /// Speed while walking
+    /// </summary>
     public float walkSpeed = 1;
+
+    /// <summary>
+    /// Speed while running
+    /// </summary>
     public float runSpeed = 4;
+
+    /// <summary>
+    /// Acceleration of the bird
+    /// </summary>
     public float acceleration = 30;
-    private float targetSpeed;
+
+    /// <summary>
+    /// Handles the moving state
+    /// </summary>
     public MovingState movingState = MovingState.Idle;
+
+    /// <summary>
+    /// Distance for seek
+    /// </summary>
     public float seekDistance = 2;
+
+    /// <summary>
+    /// Speed while rotating to change direction
+    /// </summary>
     public float rotateSpeed = 10f;
+
+    /// <summary>
+    /// Force when jumping
+    /// </summary>
     public float jumpForce = 10;
 
+    /// <summary>
+    /// Minimum time to change state
+    /// </summary>
     public float minState = 1f;
+
+    /// <summary>
+    /// Maximum time to change state
+    /// </summary>
     public float maxState = 5f;
 
+    /// <summary>
+    /// Handles if the bird is cathced
+    /// </summary>
     public bool catched = false;
 
+    /// <summary>
+    /// Sound to play when idle
+    /// </summary>
+    public AudioSource idleAudio;
+
+    /// <summary>
+    /// Sound to play when running away
+    /// </summary>
+    public AudioSource runAwayAudio;
+
+    #endregion
+
+    #region Private Attributes
+
+    /// <summary>
+    /// Stores the reference to the animator
+    /// </summary>
+    Animator animator;
+
+    /// <summary>
+    /// Speed of the animations
+    /// </summary>
+    float animationSpeed;
+
+    /// <summary>
+    /// Stores the reference to the rigidbody
+    /// </summary>
     Rigidbody rb;
 
+    /// <summary>
+    /// Clamps the movement
+    /// </summary>
     Vector3 moveAmount;
+
+    /// <summary>
+    /// Used to modify the velocity
+    /// </summary>
     Vector3 smoothMoveVelocity;
 
+    /// <summary>
+    /// Reference to some raycast needed an the raycast hit
+    /// </summary>
     Ray ray;
     Ray rayRight;
     Ray rayCenterRight;
@@ -49,32 +134,50 @@ public class ChickenMovement : MonoBehaviour {
     Ray rayCenterLeft;
     RaycastHit hit;
 
+    /// <summary>
+    /// Intern state timer to switch between states
+    /// </summary>
     float stateTimer;
 
+    /// <summary>
+    /// Current speed of the bird
+    /// </summary>
     [HideInInspector]
     public float speed = 0;
 
+    /// <summary>
+    /// Rotation of the bird
+    /// </summary>
     int rotate = 0;
 
+    /// <summary>
+    /// Direction to rotate
+    /// </summary>
     int rotateDir;
 
-    public AudioSource idleAudio;
-    public AudioSource runAwayAudio;
+    #endregion
 
+    #region Public Methods
     void Start () {
+
+        // Get the references
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
 
+        // Choose a random idle animation and set it
         int idleAnimId = Random.Range(0, 3);
         animator.SetFloat("IdleHandler", idleAnimId);
 
+        // Set random state duration
         stateTimer = Random.Range(minState, maxState);
     }
 	
-	// Update is called once per frame
+
 	void Update () {
 
         stateTimer -= Time.deltaTime;
+
+        // Handle states
         if (movingState == MovingState.Idle || catched) {
             speed = 0;
             if (stateTimer < 0) {
@@ -117,24 +220,10 @@ public class ChickenMovement : MonoBehaviour {
 
     }
 
-
-    void FixedUpdate() {
-            Vector3 targetMoveAmount = Vector3.forward * speed;
-            if (CheckForward()) {
-
-                if (rotate > 0) {
-                    int randomRotation = Random.Range(15, 90) * rotateDir;
-                    transform.RotateAround(transform.position, transform.up, Time.deltaTime * randomRotation);
-                    --rotate;
-
-                }
-            }
-
-            moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
-
-            rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
-    }
-
+    /// <summary>
+    /// Checks if the bird is seeing you
+    /// </summary>
+    /// <returns>if bird has seen you</returns>
     public bool CheckForward() {
 
         int collisionSide = 0;
@@ -234,4 +323,26 @@ public class ChickenMovement : MonoBehaviour {
 
         return collisionSide == 0;
     }
+    #endregion
+
+    #region Private Methods
+    void FixedUpdate() {
+
+        /// Move the bird
+        Vector3 targetMoveAmount = Vector3.forward * speed;
+        if (CheckForward()) {
+
+            if (rotate > 0) {
+                int randomRotation = Random.Range(15, 90) * rotateDir;
+                transform.RotateAround(transform.position, transform.up, Time.deltaTime * randomRotation);
+                --rotate;
+
+            }
+        }
+
+        moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+
+        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
+    }
+    #endregion
 }

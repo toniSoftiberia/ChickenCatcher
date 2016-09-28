@@ -8,14 +8,12 @@ public class DustCloudParticle : MonoBehaviour {
 
     ChickenMovement runnerMovement;
 
-    // Use this for initialization
     void Start () {
 
         dustCloud.SetActive(false);
         runnerMovement = GetComponent<ChickenMovement>();
     }
 	
-	// Update is called once per frame
 	void Update () {
 
         if (runnerMovement.speed == 0)

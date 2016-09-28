@@ -23,7 +23,6 @@ public class CatcherController : MonoBehaviour {
 
     Quaternion initialRot;
     Quaternion initialParentRot;
-    GravityAttraction planetGravity;
     GameController gameController;
     GameObject henHouse;
 
@@ -38,8 +37,7 @@ public class CatcherController : MonoBehaviour {
 
         initialRot = transform.rotation;
         initialParentRot = transform.parent.rotation;
-
-        planetGravity = GameObject.FindGameObjectWithTag("Planet").GetComponent<GravityAttraction>();
+        
         chickensPool = GameObject.FindGameObjectWithTag("Birds");
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         henHouse = GameObject.FindGameObjectWithTag("HenHouse");
